@@ -1,2 +1,4 @@
 /.idea/
 /vendor/
+/product_manuals/
+!/product_manuals/.gitkeep

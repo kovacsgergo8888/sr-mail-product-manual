@@ -7,6 +7,11 @@
             "email": "kovacs.gergely8888@gmail.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        }
+    },
     "require": {
         "phpmailer/phpmailer": "^6.0"
     }
