@@ -1,0 +1,13 @@
+{
+    "name": "kovacsgergo8888/sr-mail-product-manual",
+    "description": "Send product manual, atteched to e-mail from ShopRenter webhook",
+    "authors": [
+        {
+            "name": "Kovács Gergely",
+            "email": "kovacs.gergely8888@gmail.com"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^6.0"
+    }
+}
