@@ -19,12 +19,31 @@ class Config
     public $Password;
     public $SMTPSecure;
     public $Port;
+    public $BCCEmail;
+    public $fileNamePattern;
+    public $fromEmail;
+    public $fromName;
+    public $subject;
 
-    public function parseYml($ymlFilePath)
+    const CONFIG_DIR = __DIR__ . "/../../config";
+
+    public function __construct()
     {
-        $conf = yaml_parse_file($ymlFilePath);
+        $conf = parse_ini_file(self::CONFIG_DIR . "/config.ini");
+
         foreach ($conf as $key => $item) {
             $this->$key = $item;
         }
+
+    }
+
+    public function getHtmlFileContent()
+    {
+        return file_get_contents(self::CONFIG_DIR . "/mail_body_html.html");
+    }
+
+    public function getTextFileContent()
+    {
+        return file_get_contents(self::CONFIG_DIR . "/mail_body_text.txt");
     }
 }

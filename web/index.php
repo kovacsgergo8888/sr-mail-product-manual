@@ -8,11 +8,16 @@
 
 use ProductManualMailer\Config;
 use ProductManualMailer\Mailer;
+use ProductManualMailer\Order;
 
 require_once __DIR__ . "/../vendor/autoload.php";
 
 $config = new Config();
-$config->parseYml(__DIR__ . "/../config/config.yml");
+
 $mailer = new Mailer($config);
-$mailer->prepareMail($_POST);
+
+$order = new Order(file_get_contents("php://input"));
+
+$mailer->prepareMail($order);
+
 $mailer->send();

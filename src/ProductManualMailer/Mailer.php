@@ -24,61 +24,81 @@ class Mailer
      */
     private $config;
 
+    private $attachmentNumber = 0;
+
     public function __construct(Config $config)
     {
         $this->mail = new PHPMailer();
-        try {
-            //Server settings
+        $this->config = $config;
 
-            if ($config->isSMTP) {
-
-                $this->mail->isSMTP();                                      // Set mailer to use SMTP
-                $this->mail->SMTPDebug = 2;                                 // Enable verbose debug output
-                $this->mail->Host = 'smtp1.example.com;smtp2.example.com';  // Specify main and backup SMTP servers
-                $this->mail->SMTPAuth = true;                               // Enable SMTP authentication
-                $this->mail->Username = 'user@example.com';                 // SMTP username
-                $this->mail->Password = 'secret';                           // SMTP password
-                $this->mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-                $this->mail->Port = 587;                                    // TCP port to connect to
-            } else {
-                $this->mail->isMail();
-            }
-
-        } catch (PHPMailerException $e) {
-            echo 'Message could not be sent.';
-            echo 'Mailer Error: ' . $this->mail->ErrorInfo;
+        if ($config->isSMTP) {
+            $this->mail->isSMTP();                                      // Set mailer to use SMTP
+            $this->mail->Host = $this->config->Host; // Specify main and backup SMTP servers
+            $this->mail->SMTPAuth = $this->config->SMTPAuth;                               // Enable SMTP authentication
+            $this->mail->Username = $this->config->Username;                 // SMTP username
+            $this->mail->Password = $this->config->Password;                           // SMTP password
+            $this->mail->SMTPSecure = $this->config->SMTPSecure;                            // Enable TLS encryption, `ssl` also accepted
+            $this->mail->Port = $this->config->Port;                                    // TCP port to connect to
+        } else {
+            $this->mail->isMail();
         }
     }
 
-    public function prepareMail($_POST)
+    /**
+     * @param Order $order
+     */
+    public function prepareMail(Order $order)
     {
         try {
             //Recipients
-            $this->mail->setFrom('from@example.com', 'Mailer');
-            $this->mail->addAddress('joe@example.net', 'Joe User');     // Add a recipient
-            $this->mail->addAddress('ellen@example.com');               // Name is optional
-            $this->mail->addReplyTo('info@example.com', 'Information');
-            $this->mail->addCC('cc@example.com');
-            $this->mail->addBCC('bcc@example.com');
-
-            //Attachments
-            $this->mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
-            $this->mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
+            $this->mail->setFrom($this->config->fromEmail, $this->config->fromName);
+            $this->mail->addAddress($order->getEmail());     // Add a recipient// Name is optional
+            //$this->mail->addReplyTo('info@example.com', 'Information');
+            if (!empty($this->config->BCCEmail)) {
+                $this->mail->addBCC($this->config->BCCEmail);
+            }
 
             //Content
             $this->mail->isHTML(true);                                  // Set email format to HTML
-            $this->mail->Subject = 'Here is the subject';
-            $this->mail->Body = 'This is the HTML message body <b>in bold!</b>';
-            $this->mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+            $this->mail->Subject = $this->config->subject;
+            $this->mail->Body = $this->config->getHtmlFileContent();
+            $this->mail->AltBody = $this->config->getTextFileContent();
+
+            //manuals
+            $this->addAttachments($order->getOrderProducts());
+
         } catch (PHPMailerException $e) {
             echo "Mail error: " . $this->mail->ErrorInfo;
         }
     }
 
+    /**
+     * @param Product[] $products
+     */
+    protected function addAttachments($products)
+    {
+        $productManualsDir = __DIR__ . "/../../product_manuals";
+        foreach ($products as $product) {
+            $file = "$productManualsDir/{$product->getSku()}.pdf";
+            if (is_file($file)) {
+                $attachName = str_replace("[PRODUCT_NAME]", $product->getName(), $this->config->fileNamePattern);
+                try {
+                    $this->mail->addAttachment($file, $attachName);
+                    $this->attachmentNumber++;
+                } catch (PHPMailerException $e) {
+                    echo "Error at file-attach: " . $this->mail->ErrorInfo;
+                }
+            }
+        }
+    }
+
     public function send()
     {
+        echo $this->attachmentNumber;
         try {
-            $this->mail->send();
+            if ($this->attachmentNumber) {
+                $this->mail->send();
+            }
         } catch (PHPMailerException $e) {
             echo "Mail error " . $this->mail->ErrorInfo;
         }

@@ -1,2 +1,6 @@
-POST http://localhost:8888/web/
+POST http://localhost:8888/web
+Content-Type: application/json
 
+< testData.json
+
+###
