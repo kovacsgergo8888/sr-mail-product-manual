@@ -25,11 +25,13 @@ class Config
     public $fromName;
     public $subject;
 
-    const CONFIG_DIR = __DIR__ . "/../../config";
+    private $configDir;
 
     public function __construct()
     {
-        $conf = parse_ini_file(self::CONFIG_DIR . "/config.ini");
+        $this->configDir = __DIR__ . "/../../config";
+
+        $conf = parse_ini_file($this->configDir . "/config.ini");
 
         foreach ($conf as $key => $item) {
             $this->$key = $item;
@@ -39,11 +41,11 @@ class Config
 
     public function getHtmlFileContent()
     {
-        return file_get_contents(self::CONFIG_DIR . "/mail_body_html.html");
+        return file_get_contents($this->configDir . "/mail_body_html.html");
     }
 
     public function getTextFileContent()
     {
-        return file_get_contents(self::CONFIG_DIR . "/mail_body_text.txt");
+        return file_get_contents($this->configDir . "/mail_body_text.txt");
     }
 }
