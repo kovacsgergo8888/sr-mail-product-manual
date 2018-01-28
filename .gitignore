@@ -4,3 +4,4 @@
 !/product_manuals/.gitkeep
 /log/
 !/log/.gitkeep
+/test/rest-client.env.json

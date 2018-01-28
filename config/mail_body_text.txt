@@ -1,2 +1,7 @@
-Kedves Vásárló!
-Hellómi!
+Kedves [FIRST_NAME]!
+A BlitzWolf.Shop webáruházban leadott, [ORDER_ID]. számú rendelésedhez,
+csatoltan mellékeljük az alábbi termékek használati útmútatóját:
+[PRODUCT_LIST_TEXT]
+
+Üdvözlettel,
+BlitzWolf.Shop

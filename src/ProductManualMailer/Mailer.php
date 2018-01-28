@@ -26,10 +26,17 @@ class Mailer
 
     private $attachmentNumber = 0;
 
+    /**
+     * @var PlaceholderTransformer
+     */
+    private $placeholderTransformer;
+
     public function __construct(Config $config)
     {
         $this->mail = new PHPMailer();
         $this->config = $config;
+
+        $this->mail->CharSet = "UTF-8";
 
         if ($config->isSMTP) {
             $this->mail->isSMTP();
@@ -67,20 +74,19 @@ class Mailer
      */
     public function prepareMail(Order $order)
     {
+        $this->placeholderTransformer = new PlaceholderTransformer($order);
         try {
             //Recipients
             $this->mail->setFrom($this->config->fromEmail, $this->config->fromName);
-            $this->mail->addAddress($order->getEmail());     // Add a recipient// Name is optional
-            //$this->mail->addReplyTo('info@example.com', 'Information');
+            $this->mail->addAddress($order->getEmail());
             if (!empty($this->config->BCCEmail)) {
                 $this->mail->addBCC($this->config->BCCEmail);
             }
 
-            //Content
-            $this->mail->isHTML(true);                                  // Set email format to HTML
-            $this->mail->Subject = $this->config->subject;
-            $this->mail->Body = $this->config->getHtmlFileContent();
-            $this->mail->AltBody = $this->config->getTextFileContent();
+            $this->mail->isHTML(true);
+            $this->mail->Subject = $this->placeholderTransformer->replace($this->config->subject);
+            $this->mail->Body = $this->placeholderTransformer->replace($this->config->getHtmlFileContent());
+            $this->mail->AltBody = $this->placeholderTransformer->replace($this->config->getTextFileContent());
 
             //manuals
             $this->addAttachments($order->getOrderProducts());
@@ -95,13 +101,11 @@ class Mailer
      */
     protected function addAttachments($products)
     {
-        $productManualsDir = __DIR__ . "/../../product_manuals";
         foreach ($products as $product) {
-            $file = "$productManualsDir/{$product->getSku()}.pdf";
-            if (is_file($file)) {
+            if ($product->hasManual()) {
                 $attachName = str_replace("[PRODUCT_NAME]", $product->getName(), $this->config->fileNamePattern);
                 try {
-                    $this->mail->addAttachment($file, $attachName);
+                    $this->mail->addAttachment($product->getManualFile(), $attachName);
                     $this->attachmentNumber++;
                 } catch (PHPMailerException $e) {
                     echo "Error at file-attach: " . $this->mail->ErrorInfo;

@@ -18,6 +18,20 @@ class Order
      */
     private $products;
 
+    /**
+     * @var integer
+     */
+    private $innerId;
+
+    /**
+     * @var string
+     */
+    private $firstName;
+
+    /**
+     * @var string
+     */
+    private $lastName;
 
     public function __construct($data)
     {
@@ -40,6 +54,16 @@ class Order
     }
 
     /**
+     * @return int
+     */
+    public function getInnerId()
+    {
+        return $this->innerId;
+    }
+
+
+
+    /**
      * @return Product[]
      */
     public function getOrderProducts()
@@ -47,4 +71,19 @@ class Order
         return $this->products;
     }
 
+    /**
+     * @return string
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
 }

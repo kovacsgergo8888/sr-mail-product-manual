@@ -14,8 +14,12 @@ class Product
     private $sku;
     private $name;
 
+    private $productManualsDir;
+
     public function __construct($product)
     {
+        $this->productManualsDir = __DIR__ . "/../../product_manuals";
+
         foreach ($product as $key => $value) {
             $this->$key = $value;
         }
@@ -37,5 +41,17 @@ class Product
         return $this->name;
     }
 
+    public function hasManual()
+    {
+        return is_file($this->getManualFile());
+    }
+
+    /**
+     * @return string
+     */
+    public function getManualFile()
+    {
+        return "$this->productManualsDir/{$this->getSku()}.pdf";
+    }
 
 }

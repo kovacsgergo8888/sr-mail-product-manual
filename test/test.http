@@ -1,4 +1,4 @@
-POST http://localhost:8888/web
+POST {{url}}
 Content-Type: application/x-www-form-urlencoded
 
 data={
@@ -11,7 +11,7 @@ data={
              "lastname": "wse kereszt",
              "phone": "+36301231234",
              "fax": "",
-             "email": "fefewse.teszt.g@gmail.com",
+             "email": "wse.teszt.g@gmail.com",
              "shippingFirstname": "teszt vezet\u00e9k",
              "shippingLastname": "wse kereszt",
              "shippingCompany": "c\u00e9g",
@@ -65,7 +65,7 @@ data={
                  {
                    "innerId": "124",
                    "name": "100 db \u00f6sszek\u00f6t\u0151 kapocs, gumikark\u00f6t\u0151 k\u00e9sz\u00edt\u0151",
-                   "sku": "SK-00779-kapocs",
+                   "sku": "BW-S5-másolata-1",
                    "price": "290.0000",
                    "currency": "HUF",
                    "taxRate": "27.0000",
