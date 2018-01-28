@@ -19,11 +19,9 @@ class Order
     private $products;
 
 
-    public function __construct($requestBody)
+    public function __construct($data)
     {
-        $decoded = json_decode($requestBody, true);
-
-        foreach ($decoded["orders"]["order"][0] as $key => $value) {
+        foreach ($data["orders"]["order"][0] as $key => $value) {
             $this->$key = $value;
             if ($key == "orderProducts") {
                 foreach ($value as $item) {

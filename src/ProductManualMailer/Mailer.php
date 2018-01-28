@@ -32,16 +32,34 @@ class Mailer
         $this->config = $config;
 
         if ($config->isSMTP) {
-            $this->mail->isSMTP();                                      // Set mailer to use SMTP
-            $this->mail->Host = $this->config->Host; // Specify main and backup SMTP servers
-            $this->mail->SMTPAuth = $this->config->SMTPAuth;                               // Enable SMTP authentication
-            $this->mail->Username = $this->config->Username;                 // SMTP username
-            $this->mail->Password = $this->config->Password;                           // SMTP password
-            $this->mail->SMTPSecure = $this->config->SMTPSecure;                            // Enable TLS encryption, `ssl` also accepted
-            $this->mail->Port = $this->config->Port;                                    // TCP port to connect to
+            $this->mail->isSMTP();
+            $this->mail->Host = $this->config->Host;
+            $this->mail->SMTPAuth = $this->config->SMTPAuth;
+            $this->mail->Username = $this->config->Username;
+            $this->mail->Password = $this->config->Password;
+            $this->mail->SMTPSecure = $this->config->SMTPSecure;
+            $this->mail->Port = $this->config->Port;
         } else {
             $this->mail->isMail();
         }
+    }
+
+    /**
+     * @return int
+     */
+    public function getAttachmentNumber()
+    {
+        return $this->attachmentNumber;
+    }
+
+    public function getAttachementList()
+    {
+        return json_encode($this->mail->getAttachments());
+    }
+
+    public function getRecepientMail()
+    {
+        return json_encode($this->mail->getToAddresses());
     }
 
     /**
