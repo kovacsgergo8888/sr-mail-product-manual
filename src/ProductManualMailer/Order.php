@@ -26,12 +26,12 @@ class Order
     /**
      * @var string
      */
-    private $firstName;
+    private $firstname;
 
     /**
      * @var string
      */
-    private $lastName;
+    private $lastname;
 
     public function __construct($data)
     {
@@ -76,7 +76,7 @@ class Order
      */
     public function getFirstName()
     {
-        return $this->firstName;
+        return $this->lastname;
     }
 
     /**
@@ -84,6 +84,6 @@ class Order
      */
     public function getLastName()
     {
-        return $this->lastName;
+        return $this->firstname;
     }
 }
