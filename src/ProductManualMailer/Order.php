@@ -38,8 +38,8 @@ class Order
         foreach ($data["orders"]["order"][0] as $key => $value) {
             $this->$key = $value;
             if ($key == "orderProducts") {
-                foreach ($value as $item) {
-                    $this->products[] = new Product($item[0]);
+                foreach ($value["orderProduct"] as $item) {
+                    $this->products[] = new Product($item);
                 }
             }
         }
